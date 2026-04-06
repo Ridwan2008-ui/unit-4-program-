@@ -40,6 +40,20 @@ def load_data(filename):
     except FileNotFoundError:
         print("File not found!")
     return vendors
+# 2. Linear search (unsorted)
 
+def linear_search_unsorted(vendors, target_id):
+    for vendor in vendors:
+        if vendor["id"] == target_id:
+            return vendor
+    return None
+
+# 3. Linear search (sorted)
+
+def linear_search_sorted(vendors, target_id):
+    for vendor in vendors:
+        if vendor["id"] == target_id:
+            return vendor
+    return None
 
  
