@@ -1,4 +1,3 @@
-# unit-4-program-
 # coursework start 
 # Hotdog Vendor Management
 # Create the Hotdogs.txt data file
