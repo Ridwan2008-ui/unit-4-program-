@@ -19,14 +19,22 @@ with open("Hotdogs.txt", "w") as my_file:
     my_file.write("KK_745,Korner Kart,202318,90,170,25.0,1\n")
     my_file.write("KK_745,Korner Kart,202319,80,150,20.5,3\n")
     my_file.write("KK_745,Korner Kart,202320,90,180,25.0,4\n")
+
 # 1. Load vendor data from file
 def load_data(filename):
-    vendors = []
+    vendors_list = [] 
     try:
         with open(filename, "r") as file:
+            
             for line in file:
+               
+                if not line.strip():
+                    continue
+                    
                 data = line.strip().split(",")
-                vendor = {
+                
+               
+                vendor_entry = {
                     "id": data[0],
                     "name": data[1],
                     "year_week": data[2],
@@ -35,10 +43,20 @@ def load_data(filename):
                     "onions": float(data[5]),
                     "ketchup": int(data[6])
                 }
-                vendors.append(vendor)
+                
+                vendors_list.append(vendor_entry)
+                
     except FileNotFoundError:
-        print("File not found!")
-    return vendors
+        print(f"Error: The file '{filename}' was not found.")
+    
+    return vendors_list
+
+
+data = load_data("Hotdogs.txt")
+
+
+for row in data:
+    print(row)
 
 # 2. Linear search (unsorted)
 def linear_search_unsorted(vendors, target_id):
