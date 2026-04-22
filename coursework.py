@@ -24,53 +24,85 @@ with open("Hotdogs.txt", "w") as my_file:
     my_file.write("JS_202,John Smith,202313,40,110,10.0,1\n")
     my_file.write("JS_202,John Smith,202314,60,150,15.5,2\n")
 
-# 1. Load vendor data from file
+# 1. validation functions 
+  def validate_vendor_id(vendor_id):
+    # must be AA_123 format
+    return len(vendor_id) == 6 and vendor_id[:2].isupper() and vendor_id[2] == "_" and vendor_id[3:].isdigit()
+
+def validate_vendor_name(name):
+    # between 2 and 25 chars
+    return 2 <= len(name) <= 25
+
+def validate_year_week(year_week):
+    # must be YYYYWW and week 1-52
+    if len(year_week) != 6 or not year_week.isdigit():
+        return False
+    week = int(year_week[4:])
+    return 1 <= week <= 52
+
+def validate_hotdogs(num):
+    # must be divisible by 10
+    return num % 10 == 0
+
+def validate_onions(onions):
+    # must be .5 steps
+    return (onions * 2).is_integer()
+
+def validate_ketchup(ketchup):
+    # must be between 1 and 4
+    return 1 <= ketchup <= 4
+
+# 2. Load vendor data from file
+
 def load_data(filename):
     vendors_list = [] 
-    try:
+      try:
         with open(filename, "r") as file:
-            
             for line in file:
-               
-                if not line.strip():
-                    continue
-                    
                 data = line.strip().split(",")
-                
-               
-                vendor_entry = {
-                    "id": data[0],
-                    "name": data[1],
-                    "year_week": data[2],
-                    "vegan": int(data[3]),
-                    "meat": int(data[4]),
-                    "onions": float(data[5]),
-                    "ketchup": int(data[6])
-                }
-                
-                vendors_list.append(vendor_entry)
-                
+
+                try:
+                    vendor_entry = {
+                        "id": data[0],
+                        "name": data[1],
+                        "year_week": data[2],
+                        "vegan": int(data[3]),
+                        "meat": int(data[4]),
+                        "onions": float(data[5]),
+                        "ketchup": int(data[6])
+                    }
+                                        # check validation
+                    if (
+                        validate_vendor_id(vendor["id"]) and
+                        validate_vendor_name(vendor["name"]) and
+                        validate_year_week(vendor["year_week"]) and
+                        validate_hotdogs(vendor["vegan"]) and
+                        validate_hotdogs(vendor["meat"]) and
+                        validate_onions(vendor["onions"]) and
+                        validate_ketchup(vendor["ketchup"])
+                    ):
+                        vendors.append(vendor)
+                    else:
+                        print("Invalid row skipped:", data)
+
+                except:
+                    print("Error reading row:", data)
+
     except FileNotFoundError:
-        print(f"Error: The file '{filename}' was not found.")
-    
-    return vendors_list
+        print("File not found!")
 
-
-data = load_data("Hotdogs.txt")
-
-
-for row in data:
-    print(row)
-
-# 2. Linear search (unsorted)
+    return vendors
+# 3. Linear search (unsorted)
 def linear_search_unsorted(vendors, target_id):
+    # go through list one by one
     for vendor in vendors:
         if vendor["id"] == target_id:
             return vendor
     return None
 
-# 3. Linear search (sorted)
+# 4. Linear search (sorted)
 def linear_search_sorted(vendors, target_id):
+    # same as normal but assumes sorted
     for vendor in vendors:
         if vendor["id"] == target_id:
             return vendor
