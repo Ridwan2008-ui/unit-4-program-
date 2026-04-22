@@ -19,6 +19,10 @@ with open("Hotdogs.txt", "w") as my_file:
     my_file.write("KK_745,Korner Kart,202318,90,170,25.0,1\n")
     my_file.write("KK_745,Korner Kart,202319,80,150,20.5,3\n")
     my_file.write("KK_745,Korner Kart,202320,90,180,25.0,4\n")
+    my_file.write("RA_101,Ridwan Afrah,202313,50,120,10.5,2\n")
+    my_file.write("RA_101,Ridwan Afrah,202314,60,140,15.0,3\n")
+    my_file.write("JS_202,John Smith,202313,40,110,10.0,1\n")
+    my_file.write("JS_202,John Smith,202314,60,150,15.5,2\n")
 
 # 1. Load vendor data from file
 def load_data(filename):
