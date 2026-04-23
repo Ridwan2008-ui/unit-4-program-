@@ -148,3 +148,66 @@ def quick_sort(vendors):
     right = [v for v in vendors[1:] if v["id"] > pivot["id"]]
     # Sort both sides and combine with pivot
     return quick_sort(left) + [pivot] + quick_sort(right)
+
+# 8. TIMING FUNCTIONS
+def time_search(func, vendors, target):
+    start = time.time()
+    result = func(vendors, target)
+    end = time.time()
+    return result, end - start
+
+def time_sort(func, vendors):
+    start = time.time()
+    result = func(vendors)
+    end = time.time()
+    return result, end - start
+
+# 9. ANALYSIS
+def most_productive_vendor(vendors):
+    return max(vendors, key=lambda v: v["vegan"] + v["meat"])
+
+def total_hotdogs(vendors):
+    return sum(v["vegan"] for v in vendors), sum(v["meat"] for v in vendors)
+
+def least_ketchup(vendors):
+    return min(vendors, key=lambda v: v["ketchup"])
+
+def save_results(filename, text):
+    with open(filename, "w") as file:
+        file.write(text)
+
+# 9. MAIN
+def main():
+    vendors = load_data("Hotdogs.txt")
+    if not vendors: return
+
+    target = input("Enter Vendor ID (e.g. DD_056): ")
+
+    # Sorting
+    bubble_sorted, bubble_time = time_sort(bubble_sort, vendors)
+    quick_sorted, quick_time = time_sort(quick_sort, vendors)
+
+    # Searching
+    b_res, b_time = time_search(binary_search, quick_sorted, target)
+    lu_res, lu_time = time_search(linear_search_unsorted, vendors, target)
+
+    # Analysis
+    best = most_productive_vendor(vendors)
+    vegan, meat = total_hotdogs(vendors)
+    least = least_ketchup(vendors)
+
+    output = (
+        f"\nMost productive vendor entry: {best['name']} (ID: {best['id']})\n"
+        f"Total vegan sold: {vegan}\n"
+        f"Total meat sold: {meat}\n"
+        f"Vendor entry with least ketchup: {least['name']}\n"
+        f"\nSort Times -> Bubble: {bubble_time:.6f}s, Quick: {quick_time:.6f}s\n"
+        f"Search Times -> Binary: {b_time:.6f}s, Linear: {lu_time:.6f}s\n"
+    )
+
+    print(output)
+    save_results("analysis_results.txt", output)
+
+if __name__ == "__main__":
+    main()
+
