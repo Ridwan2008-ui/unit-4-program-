@@ -2,6 +2,7 @@
 # Hotdog Vendor Management
 # Create the Hotdogs.txt data file
 #Format: ID ,Name, Yearweek, Vegansold ,Meatsold,Onion used, Ketchup used
+import time
 with open("Hotdogs.txt", "w") as my_file:
     my_file.write("DD_056,Dolly Dogs,202313,40,140,10.5,1\n")
     my_file.write("DD_056,Dolly Dogs,202314,40,170,15.0,2\n")
@@ -25,7 +26,7 @@ with open("Hotdogs.txt", "w") as my_file:
     my_file.write("JS_202,John Smith,202314,60,150,15.5,2\n")
 
 # 1. validation functions 
-  def validate_vendor_id(vendor_id):
+def validate_vendor_id(vendor_id):
     # must be AA_123 format
     return len(vendor_id) == 6 and vendor_id[:2].isupper() and vendor_id[2] == "_" and vendor_id[3:].isdigit()
 
@@ -53,16 +54,19 @@ def validate_ketchup(ketchup):
     return 1 <= ketchup <= 4
 
 # 2. Load vendor data from file
+import time 
 
 def load_data(filename):
-    vendors_list = [] 
-      try:
+    vendors = [] 
+    try:
         with open(filename, "r") as file:
             for line in file:
                 data = line.strip().split(",")
+                if not data or len(data) < 7: continue 
 
                 try:
-                    vendor_entry = {
+                   
+                    vendor = {
                         "id": data[0],
                         "name": data[1],
                         "year_week": data[2],
@@ -71,7 +75,8 @@ def load_data(filename):
                         "onions": float(data[5]),
                         "ketchup": int(data[6])
                     }
-                                        # check validation
+                    
+                   
                     if (
                         validate_vendor_id(vendor["id"]) and
                         validate_vendor_name(vendor["name"]) and
@@ -85,13 +90,14 @@ def load_data(filename):
                     else:
                         print("Invalid row skipped:", data)
 
-                except:
-                    print("Error reading row:", data)
+                except (ValueError, IndexError) as e:
+                    print(f"Error processing row {data}: {e}")
 
     except FileNotFoundError:
         print("File not found!")
 
     return vendors
+
 # 3. Linear search (unsorted)
 def linear_search_unsorted(vendors, target_id):
     # go through list one by one
@@ -210,4 +216,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
