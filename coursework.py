@@ -65,7 +65,7 @@ def load_data(filename):
                 if not data or len(data) < 7: continue 
 
                 try:
-                   
+                    
                     vendor = {
                         "id": data[0],
                         "name": data[1],
@@ -76,7 +76,8 @@ def load_data(filename):
                         "ketchup": int(data[6])
                     }
                     
-                   
+                    
+                    
                     if (
                         validate_vendor_id(vendor["id"]) and
                         validate_vendor_name(vendor["name"]) and
@@ -112,6 +113,8 @@ def linear_search_sorted(vendors, target_id):
     for vendor in vendors:
         if vendor["id"] == target_id:
             return vendor
+        elif vendor["id"] > target_id:
+            break
     return None
 
 # 5. Binary Search (Sorted Only)
@@ -168,6 +171,19 @@ def time_sort(func, vendors):
     end = time.time()
     return result, end - start
 
+#  PERFORMANCE FUNCTIONS
+def time_search_perf(func, vendors, target):
+    start = time.perf_counter()
+    result = func(vendors, target)
+    end = time.perf_counter()
+    return result, end - start
+
+def time_sort_perf(func, vendors):
+    start = time.perf_counter()
+    result = func(vendors)
+    end = time.perf_counter()
+    return result, end - start
+
 # 9. ANALYSIS
 def most_productive_vendor(vendors):
     return max(vendors, key=lambda v: v["vegan"] + v["meat"])
@@ -187,7 +203,7 @@ def main():
     vendors = load_data("Hotdogs.txt")
     if not vendors: return
 
-   
+    
     while True:
         target = input("Enter Vendor ID (e.g. DD_056): ")
         if validate_vendor_id(target):
@@ -195,13 +211,22 @@ def main():
         else:
             print("Error: Invalid Vendor ID format. Please use 'AA_123' (2 caps, underscore, 3 digits).")
 
-    # Sorting
+    # Sorting 
     bubble_sorted, bubble_time = time_sort(bubble_sort, vendors)
     quick_sorted, quick_time = time_sort(quick_sort, vendors)
 
-    # Searching
+    # Searching 
     b_res, b_time = time_search(binary_search, quick_sorted, target)
     lu_res, lu_time = time_search(linear_search_unsorted, vendors, target)
+
+    #  EFFICIENCY COMPARISON (SORTS) 
+    sorted_bub, t_bubble_perf = time_sort_perf(bubble_sort, list(vendors))
+    sorted_qui, t_quick_perf = time_sort_perf(quick_sort, list(vendors))
+
+    #  EFFICIENCY COMPARISON (SEARCHES)
+    res_un, t_unsorted = time_search_perf(linear_search_unsorted, vendors, target)
+    res_so, t_sorted_lin = time_search_perf(linear_search_sorted, quick_sorted, target)
+    res_bi, t_binary = time_search_perf(binary_search, quick_sorted, target)
 
     # Analysis
     best = most_productive_vendor(vendors)
@@ -215,6 +240,13 @@ def main():
         f"Vendor entry with least ketchup: {least['name']}\n"
         f"\nSort Times -> Bubble: {bubble_time:.6f}s, Quick: {quick_time:.6f}s\n"
         f"Search Times -> Binary: {b_time:.6f}s, Linear: {lu_time:.6f}s\n"
+        f"\n--- Sort Efficiency Comparison (perf_counter) ---"
+        f"\nBubble Sort: {t_bubble_perf:.10f}s"
+        f"\nQuick Sort:  {t_quick_perf:.10f}s"
+        f"\n--- Search Efficiency Comparison (perf_counter) ---"
+        f"\nUnsorted Linear: {t_unsorted:.10f}s"
+        f"\nSorted Linear:   {t_sorted_lin:.10f}s"
+        f"\nBinary Search:   {t_binary:.10f}s\n"
     )
 
     print(output)
