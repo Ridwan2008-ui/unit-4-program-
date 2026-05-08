@@ -187,7 +187,13 @@ def main():
     vendors = load_data("Hotdogs.txt")
     if not vendors: return
 
-    target = input("Enter Vendor ID (e.g. DD_056): ")
+   
+    while True:
+        target = input("Enter Vendor ID (e.g. DD_056): ")
+        if validate_vendor_id(target):
+            break  # Exit loop if ID is valid
+        else:
+            print("Error: Invalid Vendor ID format. Please use 'AA_123' (2 caps, underscore, 3 digits).")
 
     # Sorting
     bubble_sorted, bubble_time = time_sort(bubble_sort, vendors)
